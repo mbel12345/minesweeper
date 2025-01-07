@@ -1,0 +1,56 @@
+#menu-bar {
+    display: flex;
+    position: absolute;
+    top: 5%;
+    height: 8%;
+    left: 5%;
+    width: 90%;
+}
+
+.menu-label {
+    position: absolute;
+    top: 0%;
+    height: 45%;
+}
+
+.menu-main {
+    position: absolute;
+    top: 50%;
+    height: 50%;
+}
+
+#difficulty-div {
+    width: 40%;
+}
+
+#start-div {
+    width: 15%;
+}
+
+#flagged-div {  
+    width: 15%;
+}
+
+#time-div {
+    width: 15%;
+}
+
+#game-div {
+    position: absolute;
+    top: 18%;
+    height: 80%;
+    left: 5%;
+    width: 90%;
+}
+
+#game-grid > tr > td {
+    border-color: black;
+    border-width: 3px;
+}
+#game-grid > tr > .valid-space {
+    background: green;
+}
+
+#game-grid > tr > .invalid-space {
+    background: red;
+}
