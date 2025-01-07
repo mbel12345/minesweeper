@@ -54,3 +54,7 @@
 #game-grid > tr > .invalid-space {
     background: red;
 }
+
+#game-grid > tr > .mine-space {
+    background: purple;
+}

@@ -89,9 +89,10 @@ function drawBoard() {
     var attemptedMines = Array.from(Array(FULL_WIDTH*FULL_HEIGHT).keys());
     while (minesSet < numMines)
     {
-        var index = attemptedMines[Math.floor(Math.random()*attemptedMines.length)];
-        attemptedMines.splice(index, 1);
-        space = getSpace(index);
+        var attemptedMinesIndex = Math.floor(Math.random()*attemptedMines.length);
+        var spaceIndex = attemptedMines[attemptedMinesIndex];
+        attemptedMines.splice(attemptedMinesIndex, 1);
+        space = getSpace(spaceIndex);
         if (space.getIsValid()) {
             space.setIsMine(true);
             minesSet++;
@@ -117,7 +118,7 @@ function checkMine() {
     var spaceId = $(this).attr("id");
     var space = getSpace(spaceId);
     if (space.getIsMine()) {
-        $(this).addClass("invalid-space");
+        $(this).addClass("mine-space");
         $(this).removeClass("valid-space");
     }
 }
