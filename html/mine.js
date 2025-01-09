@@ -1,15 +1,18 @@
-var FULL_WIDTH = 30;
-var FULL_HEIGHT = 16;
+var FULL_WIDTH = 10; // TODO: Change to 30
+var FULL_HEIGHT = 10; // TODO: Change to 16
 
 var board = [];
+var gameOver = false;
 
 class Space {
 
     _id = "";
     isValid = false;
     isMine = false;
-    isVisible = false;
-    numMines = 0;
+    isRevealed = false;
+    isFlagged = false;
+    row = -1;
+    col = -1;
 
     constructor(_idNum) {
         this._id = "space-" + _idNum;
@@ -23,12 +26,20 @@ class Space {
         this.isMine = isMine;
     }
 
-    setIsVisible(isVisible) {
-        this.isVisible = isVisible;
+    setIsRevealed(isRevealed) {
+        this.isRevealed = isRevealed;
     }
 
-    setNumMines(numMines) {
-        this.numMines = numMines;
+    setIsFlagged(isFlagged) {
+        this.isFlagged = isFlagged;
+    }
+
+    setRow(row) {
+        this.row = row;
+    }
+
+    setCol(col) {
+        this.col = col;
     }
 
     getIsValid() {
@@ -39,25 +50,34 @@ class Space {
         return this.isMine;
     }
 
+    getIsRevealed() {
+        return this.isRevealed;
+    }
+
+    getIsFlagged() {
+        return this.isFlagged;
+    }
+
+    getRow() {
+        return this.row;
+    }
+
+    getCol() {
+        return this.col;
+    }
+         
+    getElement() {
+        return document.getElementById(this._id);
+    }
+
     toHtml() { 
         return "<td class='space " + (this.isValid ? "valid-space" : "invalid-space") + "' id='" + this._id + "'></td>";
     }
 }
 
-function setDifficulty() {
-    var dropDown = document.getElementById("difficulty-dropdown");
-    dropDown.innerHTML = this.innerHTML;
-}
-
-function getSpace(i) {
-
-    i = parseInt(i.toString().replace("space-", ""));
-    var row = Math.floor(i / FULL_WIDTH);
-    var col = i % FULL_WIDTH;
-    return board[row][col];
-}
-
 function drawBoard() {
+
+    gameOver = false;
 
     // Determine difficulty
     var difficultyDropDown = document.getElementById("difficulty-dropdown");
@@ -78,7 +98,10 @@ function drawBoard() {
             var space = new Space(row*FULL_WIDTH + col);
             space.setIsValid(isValid);
             space.setIsMine(false);
-            space.setIsVisible(false);
+            space.setIsRevealed(false);
+            space.setIsFlagged(false);
+            space.setRow(row);
+            space.setCol(col);
             board[board.length - 1].push(space);
         }
     }
@@ -110,23 +133,119 @@ function drawBoard() {
     }
     var gameGrid = document.getElementById("game-grid");
     gameGrid.innerHTML = boardHtml;
-    $(".space").click(checkMine);
+    $(".space").click(checkSpace);
+    $(".space").bind("contextmenu", flagMine);
 }
 
-function checkMine() {
+function checkSpace() {
 
-    var spaceId = $(this).attr("id");
-    var space = getSpace(spaceId);
+    if (gameOver) {
+        return;
+    }
+    var space = getSpace($(this).attr("id"));
+    if (space.getIsRevealed() || space.getIsFlagged()) {
+        return;
+    }
     if (space.getIsMine()) {
-        $(this).addClass("mine-space");
-        $(this).removeClass("valid-space");
+        loseGame(space);
+        return;
+    }
+    setNumAdjacentMines(space);
+}
+
+function flagMine() {
+
+    if (gameOver) {
+        return;
+    }
+    var space = getSpace($(this).attr("id"));
+    if (space.getIsRevealed()) {
+        return;
+    }
+    if (space.getIsFlagged()) {
+        space.setIsFlagged(false);
+        $(this).removeClass("flag-space");
+    } else {
+        space.setIsFlagged(true);
+        $(this).addClass("flag-space");
     }
 }
 
-$(document).ready(function() {
-    $(".difficulty-item").click(setDifficulty);
-});
+function setNumAdjacentMines(space) {
+
+    var row = space.getRow();
+    var col = space.getCol();
+    var numMines = 0;
+    if (getSpaceByPosition(row - 1, col - 1).getIsMine()) { // Top-left
+        numMines++;
+    }
+    if (getSpaceByPosition(row - 1, col).getIsMine()) { // Top-middle
+        numMines++;
+    }
+    if (getSpaceByPosition(row -1, col + 1).getIsMine()) { // Top-right
+        numMines++;
+    }
+    if (getSpaceByPosition(row, col - 1).getIsMine()) { // Middle-left
+        numMines++;
+    }
+    if (getSpaceByPosition(row, col + 1).getIsMine()) { // Middle-right
+        numMines++;
+    }
+    if (getSpaceByPosition(row + 1, col - 1).getIsMine()) { // Bottom-left
+        numMines++;
+    }
+    if (getSpaceByPosition(row + 1, col).getIsMine()) { // Bottom-middle
+        numMines++;
+    }
+    if (getSpaceByPosition(row + 1, col + 1).getIsMine()) { // Bottom-right
+        numMines++;
+    }
+    $(space.getElement()).addClass("number-space");
+    $(space.getElement()).addClass("number-" + numMines + "-space");
+}
+
+function loseGame(space) {
+
+    for (row = 0; row < FULL_HEIGHT; row++) {
+        for (col = 0; col < FULL_WIDTH; col++) {
+            var otherSpace = getSpaceByPosition(row, col);
+            if (otherSpace.getIsMine() && $(otherSpace.getElement()).attr("id") != $(space.getElement()).attr("id")) {
+                $(otherSpace.getElement()).addClass("mine-space");
+            }
+        }
+    }
+    $(space.getElement()).addClass("mine-selected-space");
+    document.getElementById("flagged-div-text").innerHTML = "Game Over!";
+    gameOver = true;
+}
+
+function getSpace(i) {
+
+    // i is a number between 0 and FULL_WIDTH*FULL_HEIGHT, where 0 represents top-left space and FULL_WIDTH*FULL_HEIGHT-1 represents bottom-right space OR
+    // an id of the <td> element that contains the space, which is space-<number representing the above description>
+    i = parseInt(i.toString().replace("space-", ""));
+    var row = Math.floor(i / FULL_WIDTH);
+    var col = i % FULL_WIDTH;
+    return board[row][col];
+}
+
+function getSpaceByPosition(row, col) {
+
+    if (row < 0 || row >= FULL_HEIGHT || col < 0 || col >= FULL_WIDTH) {
+        return new Space("out-of-range");
+    }
+    return getSpace(row*FULL_WIDTH + col);
+}
+
+function setDifficulty() {
+    var dropDown = document.getElementById("difficulty-dropdown");
+    dropDown.innerHTML = this.innerHTML;
+}
 
 $(document).ready(function() {
     $("#start-button").click(drawBoard);
+});
+
+$(document).ready(function() {
+    $(".difficulty-item").click(setDifficulty);
 });

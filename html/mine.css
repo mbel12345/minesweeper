@@ -43,6 +43,10 @@
     width: 90%;
 }
 
+#flagged-div-text {
+    color: red;
+}
+
 #game-grid > tr > td {
     border-color: black;
     border-width: 3px;
@@ -55,6 +59,54 @@
     background: red;
 }
 
-#game-grid > tr > .mine-space {
+#game-grid > tr > .number-space {
+    background-size: 100% 100%;
+}
+
+#game-grid > tr > .number-1-space {
+    background-image: url("images/one.png");
+}
+
+#game-grid > tr > .number-2-space {
+    background-image: url("images/two.png");
+}
+
+#game-grid > tr > .number-3-space {
+    background-image: url("images/three.png");
+}
+
+#game-grid > tr > .number-4-space {
+    background-image: url("images/four.png");
+}
+
+#game-grid > tr > .number-5-space {
+    background-image: url("images/five.png");
+}
+
+#game-grid > tr > .number-6-space {
+    background-image: url("images/six.png");
+}
+
+#game-grid > tr > .number-7-space {
+    background-image: url("images/seven.png");
+}
+
+#game-grid > tr > .number-8-space {
+    background-image: url("images/eight.png");
+}
+
+#game-grid > tr > .flag-space {
     background: purple;
+    background-image: url("images/flag.png");
+    background-size: 100% 100%;
+}
+
+#game-grid > tr > .mine-space {
+    background-image: url("images/mine.png");
+    background-size: 100% 100%;
+}
+
+#game-grid > tr > .mine-selected-space {
+    background-image: url("images/mine-selected.png");
+    background-size: 100% 100%;
 }

@@ -20,7 +20,7 @@
                     <div class="dropdown menu-main">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="difficulty-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Difficulty</button>
                         <div class="dropdown-menu" aria-labelledby="difficulty-dropdown">
-                            <a class="dropdown-item difficulty-item" href="#">Test (4 x 4) with 5 mines</a>
+                            <a class="dropdown-item difficulty-item" href="#">Test (6 x 6) with 30 mines</a>
                             <a class="dropdown-item difficulty-item" href="#">Easy (9 x 9) with 10 mines</a>
                             <a class="dropdown-item difficulty-item" href="#">Intermediate (16 x 16) with 40 mines</a>
                             <a class="dropdown-item difficulty-item" href="#">Expert (30 x 16) with 99 mines</a>
@@ -37,7 +37,7 @@
                         <h4>Remaining</h4>
                     </div>
                     <div class="menu-main">
-                        <h4>???</h4>
+                        <h4 id="flagged-div-text">???</h4>
                     </div>
                 </div>
                 <div id="time-div">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <table class="table" id="game-div">
+            <table class="table" id="game-div" oncontextmenu="return false;">
                 <tbody id="game-grid">
                 </tbody>
             </tr>
