@@ -63,6 +63,10 @@
     background-size: 100% 100%;
 }
 
+#game-grid > tr > .number-0-space {
+    background-color: #a6a6a6;
+}
+
 #game-grid > tr > .number-1-space {
     background-image: url("images/one.png");
 }
