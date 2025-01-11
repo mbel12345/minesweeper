@@ -259,6 +259,11 @@ function getSpace(i) {
 function getSpaceByPosition(row, col) {
 
     // Get space based on board position
+    if (row < 0 || row >= FULL_HEIGHT || col < 0 || col >= FULL_WIDTH) {
+        var space = new Space("out-of-range");
+        space.setIsValid(false);
+        return space;
+    }
     return getSpace(row*FULL_WIDTH + col);
 }
 
