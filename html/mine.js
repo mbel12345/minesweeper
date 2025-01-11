@@ -1,18 +1,22 @@
-var FULL_WIDTH = 10; // TODO: Change to 30
-var FULL_HEIGHT = 10; // TODO: Change to 16
+var FULL_WIDTH = 30;
+var FULL_HEIGHT = 16;
 
 var board = [];
+var width = 0;
+var height = 0;
+var numMines = 0;
 var gameOver = false;
-
+var gameStarted = false;
+    
 class Space {
 
     _id = "";
-    isValid = false;
-    isMine = false;
-    isRevealed = false;
-    isFlagged = false;
-    row = -1;
-    col = -1;
+    isValid = false; // Space's position is within the board?
+    isMine = false; // Is the Space a mine?
+    isRevealed = false; // Number/blank is visible?
+    isFlagged = false; // Marked as having a mine?
+    row = -1; // Board position
+    col = -1; // Board position
 
     constructor(_idNum) {
         this._id = "space-" + _idNum;
@@ -40,6 +44,10 @@ class Space {
 
     setCol(col) {
         this.col = col;
+    }
+
+    getId() {
+        return this._id;
     }
 
     getIsValid() {
@@ -78,6 +86,7 @@ class Space {
 function drawBoard() {
 
     gameOver = false;
+    gameStarted = false;
 
     // Determine difficulty
     var difficultyDropDown = document.getElementById("difficulty-dropdown");
@@ -86,10 +95,13 @@ function drawBoard() {
         return;
     }
 
+    // Get number of mines from difficulty dropdown
+    numMines = difficultyDropDown.innerHTML.match(/([0-9]+) mines/)[1];
+
     // Set 2-D array of spaces, inlcuding marking each space as valid or invalid
     var size = difficultyDropDown.innerHTML.split("(")[1].split(")")[0].toLowerCase().replace(" ", "");
-    var width = Number(size.split("x")[0]);
-    var height = Number(size.split("x")[1]);
+    width = Number(size.split("x")[0]);
+    height = Number(size.split("x")[1]);
     board = [];
     for (var row = 0; row < FULL_HEIGHT; row++) {
         board.push([]);
@@ -103,22 +115,6 @@ function drawBoard() {
             space.setRow(row);
             space.setCol(col);
             board[board.length - 1].push(space);
-        }
-    }
-
-    // Set mines randomly in the valid spaces
-    var numMines = difficultyDropDown.innerHTML.match(/([0-9]+) mines/)[1];
-    var minesSet = 0;
-    var attemptedMines = Array.from(Array(FULL_WIDTH*FULL_HEIGHT).keys());
-    while (minesSet < numMines)
-    {
-        var attemptedMinesIndex = Math.floor(Math.random()*attemptedMines.length);
-        var spaceIndex = attemptedMines[attemptedMinesIndex];
-        attemptedMines.splice(attemptedMinesIndex, 1);
-        space = getSpace(spaceIndex);
-        if (space.getIsValid()) {
-            space.setIsMine(true);
-            minesSet++;
         }
     }
 
@@ -137,29 +133,62 @@ function drawBoard() {
     $(".space").bind("contextmenu", flagMine);
 }
 
+function firstClick(space) {
+
+    gameStarted = true;
+
+    // The first space clicked must have 0 mines adjacent to it; mark the first space and its adjacent spaces as non-mines
+    var safeSpaces = getAdjacentSpaces(space.getRow(), space.getCol()).concat([space]); 
+    var safeIds = [];
+    safeSpaces.forEach(function(item) {
+        safeIds.push(item.getId());
+    });
+
+    // Keep randomly selecting board spaces and making each one a mine if allowed, until the correct number of mines has been set
+    var minesSet = 0;
+    var attemptedMines = Array.from(Array(FULL_WIDTH*FULL_HEIGHT).keys());
+    while (minesSet < numMines)
+    {
+        var attemptedMinesIndex = Math.floor(Math.random()*attemptedMines.length);
+        var randomSpaceIndex = attemptedMines[attemptedMinesIndex];
+        attemptedMines.splice(attemptedMinesIndex, 1);
+        var randomSpace = getSpace(randomSpaceIndex);
+        if (randomSpace.getIsValid() && !safeIds.includes(randomSpace.getId())) {
+            randomSpace.setIsMine(true);
+            minesSet++;
+        }
+    }
+}
+
 function checkSpace() {
 
+    // When user clicks an unrevealed space: If it is not a mine, set the correct number, otherwise lose the game
     if (gameOver) {
         return;
     }
     var space = getSpace($(this).attr("id"));
-    if (space.getIsRevealed() || space.getIsFlagged()) {
+    if (!space.getIsValid() || space.getIsRevealed() || space.getIsFlagged()) {
         return;
     }
-    if (space.getIsMine()) {
-        loseGame(space);
-        return;
+    if (!gameStarted) {
+        firstClick(space);
+    } else {
+        if (space.getIsMine()) {
+            loseGame(space);
+            return;
+        }
     }
     setNumAdjacentMines(space);
 }
 
 function flagMine() {
 
+    // Mark a space as a mine
     if (gameOver) {
         return;
     }
     var space = getSpace($(this).attr("id"));
-    if (space.getIsRevealed()) {
+    if (space.getIsRevealed() || !space.getIsValid()) {
         return;
     }
     if (space.getIsFlagged()) {
@@ -173,43 +202,36 @@ function flagMine() {
 
 function setNumAdjacentMines(space) {
 
+    // Show the number of mines that are adjacent to space. If there are 0, also show the number of mines adjacent to all the adjacent spaces.
+    if (space.getIsRevealed()) {
+        return;
+    }
+    space.setIsRevealed(true);
     var row = space.getRow();
     var col = space.getCol();
     var numMines = 0;
-    if (getSpaceByPosition(row - 1, col - 1).getIsMine()) { // Top-left
-        numMines++;
-    }
-    if (getSpaceByPosition(row - 1, col).getIsMine()) { // Top-middle
-        numMines++;
-    }
-    if (getSpaceByPosition(row -1, col + 1).getIsMine()) { // Top-right
-        numMines++;
-    }
-    if (getSpaceByPosition(row, col - 1).getIsMine()) { // Middle-left
-        numMines++;
-    }
-    if (getSpaceByPosition(row, col + 1).getIsMine()) { // Middle-right
-        numMines++;
-    }
-    if (getSpaceByPosition(row + 1, col - 1).getIsMine()) { // Bottom-left
-        numMines++;
-    }
-    if (getSpaceByPosition(row + 1, col).getIsMine()) { // Bottom-middle
-        numMines++;
-    }
-    if (getSpaceByPosition(row + 1, col + 1).getIsMine()) { // Bottom-right
-        numMines++;
-    }
+    var adjacentSpaces = getAdjacentSpaces(row, col);
+    adjacentSpaces.forEach(function(item) {
+        if (item.getIsMine()) {
+            numMines++;
+        }
+    });
     $(space.getElement()).addClass("number-space");
     $(space.getElement()).addClass("number-" + numMines + "-space");
+    if (numMines == 0) {
+        adjacentSpaces.forEach(function(item) {
+            setNumAdjacentMines(item);
+        });
+    }
 }
 
 function loseGame(space) {
 
+    // Player clicked on a mine
     for (row = 0; row < FULL_HEIGHT; row++) {
         for (col = 0; col < FULL_WIDTH; col++) {
             var otherSpace = getSpaceByPosition(row, col);
-            if (otherSpace.getIsMine() && $(otherSpace.getElement()).attr("id") != $(space.getElement()).attr("id")) {
+            if (otherSpace.getIsMine() && otherSpace.getId() != space.getId()) {
                 $(otherSpace.getElement()).addClass("mine-space");
             }
         }
@@ -226,18 +248,48 @@ function getSpace(i) {
     i = parseInt(i.toString().replace("space-", ""));
     var row = Math.floor(i / FULL_WIDTH);
     var col = i % FULL_WIDTH;
+    if (row < 0 || row >= FULL_HEIGHT || col < 0 || col >= FULL_WIDTH) {
+        var space = new Space("out-of-range");
+        space.setIsValid(false);
+        return space;
+    }
     return board[row][col];
 }
 
 function getSpaceByPosition(row, col) {
 
-    if (row < 0 || row >= FULL_HEIGHT || col < 0 || col >= FULL_WIDTH) {
-        return new Space("out-of-range");
-    }
+    // Get space based on board position
     return getSpace(row*FULL_WIDTH + col);
 }
 
+function getAdjacentSpaces(row, col) {
+
+    // Get the 8 spaces that surround the space at position = (row, col)
+
+    var possibleSpaces = [
+        getSpaceByPosition(row - 1, col - 1), // Top-left
+        getSpaceByPosition(row - 1, col    ), // Top-middle
+        getSpaceByPosition(row - 1, col + 1), // Top-right
+        getSpaceByPosition(row    , col - 1), // Middle-left
+        getSpaceByPosition(row    , col + 1), // Middle-right
+        getSpaceByPosition(row + 1, col - 1), // Bottom-left
+        getSpaceByPosition(row + 1, col    ), // Bottom-middle
+        getSpaceByPosition(row + 1, col + 1), // Bottom-right
+    ]
+
+    var spaces = [];
+    possibleSpaces.forEach(function(item) {
+        if (item.getIsValid()) {
+            spaces.push(item);
+        }
+    });
+
+    return spaces;
+}
+
 function setDifficulty() {
+
+    // Set the value of the difficulty dropdown after the user clicks it
     var dropDown = document.getElementById("difficulty-dropdown");
     dropDown.innerHTML = this.innerHTML;
 }
