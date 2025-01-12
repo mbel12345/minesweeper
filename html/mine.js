@@ -231,8 +231,11 @@ function loseGame(space) {
     for (row = 0; row < FULL_HEIGHT; row++) {
         for (col = 0; col < FULL_WIDTH; col++) {
             var otherSpace = getSpaceByPosition(row, col);
-            if (otherSpace.getIsMine() && otherSpace.getId() != space.getId()) {
+            if (otherSpace.getIsMine() && !otherSpace.getIsFlagged() && otherSpace.getId() != space.getId()) {
                 $(otherSpace.getElement()).addClass("mine-space");
+            }
+            if (!otherSpace.getIsMine() && otherSpace.getIsFlagged()) {
+                $(otherSpace.getElement()).addClass("wrong-flag-space");
             }
         }
     }

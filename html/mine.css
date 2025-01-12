@@ -100,8 +100,12 @@
 }
 
 #game-grid > tr > .flag-space {
-    background: purple;
     background-image: url("images/flag.png");
+    background-size: 100% 100%;
+}
+
+#game-grid > tr > .wrong-flag-space {
+    background-image: url("images/wrong-flag.png");
     background-size: 100% 100%;
 }
 
