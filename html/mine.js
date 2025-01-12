@@ -7,6 +7,7 @@ var height = 0;
 var numMines = 0;
 var gameOver = false;
 var gameStarted = false;
+var timerId = null;
     
 class Space {
 
@@ -83,7 +84,7 @@ class Space {
     }
 }
 
-function drawBoard() {
+function startGame() {
 
     gameOver = false;
     gameStarted = false;
@@ -131,6 +132,12 @@ function drawBoard() {
     gameGrid.innerHTML = boardHtml;
     $(".space").click(checkSpace);
     $(".space").bind("contextmenu", flagMine);
+
+    // Reset timer
+    if (timerId) {
+        clearInterval(timerId);
+    }
+    document.getElementById("time-div-text").innerHTML = "000";
 }
 
 function firstClick(space) {
@@ -158,6 +165,7 @@ function firstClick(space) {
             minesSet++;
         }
     }
+    startTimer();
 }
 
 function checkSpace() {
@@ -241,6 +249,9 @@ function loseGame(space) {
     }
     $(space.getElement()).addClass("mine-selected-space");
     document.getElementById("flagged-div-text").innerHTML = "Game Over!";
+    if (timerId) {
+        clearInterval(timerId);
+    }
     gameOver = true;
 }
 
@@ -302,8 +313,22 @@ function setDifficulty() {
     dropDown.innerHTML = this.innerHTML;
 }
 
+
+function startTimer() {
+
+    // Start game timer, which is shown at the top
+    if (timerId) {
+        clearInterval(timerId);
+    }
+    var currTime = 1;
+    timerId = setInterval(function() {
+        document.getElementById("time-div-text").innerHTML = String(currTime).padStart(3, "0");
+        currTime++;
+    }, 1000);
+}
+
 $(document).ready(function() {
-    $("#start-button").click(drawBoard);
+    $("#start-button").click(startGame);
 });
 
 $(document).ready(function() {
