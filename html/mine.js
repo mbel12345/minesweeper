@@ -138,6 +138,9 @@ function startGame() {
         clearInterval(timerId);
     }
     document.getElementById("time-div-text").innerHTML = "000";
+
+    // Remove win/loss message
+    document.getElementById("game-status-div-text").innerHTML = "";
 }
 
 function firstClick(space) {
@@ -248,7 +251,9 @@ function loseGame(space) {
         }
     }
     $(space.getElement()).addClass("mine-selected-space");
-    document.getElementById("flagged-div-text").innerHTML = "Game Over!";
+    var statusText = document.getElementById("game-status-div-text");
+    statusText.innerHTML = "Game Over!";
+    statusText.style["color"] = "red";
     if (timerId) {
         clearInterval(timerId);
     }

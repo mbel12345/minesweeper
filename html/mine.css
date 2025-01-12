@@ -43,10 +43,6 @@
     width: 90%;
 }
 
-#flagged-div-text {
-    color: red;
-}
-
 #game-grid > tr > td {
     border-color: black;
     border-width: 3px;
