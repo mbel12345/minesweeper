@@ -198,7 +198,7 @@ function checkSpace() {
 function flagMine() {
 
     // Mark a space as a mine
-    if (gameOver) {
+    if (gameOver || !gameStarted) {
         return;
     }
     var space = getSpace($(this).attr("id"));
