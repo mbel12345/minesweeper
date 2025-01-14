@@ -5,6 +5,7 @@ var board = [];
 var width = 0;
 var height = 0;
 var numMines = 0;
+var numRemaining = 0;
 var gameOver = false;
 var gameStarted = false;
 var timerId = null;
@@ -98,6 +99,8 @@ function startGame() {
 
     // Get number of mines from difficulty dropdown
     numMines = difficultyDropDown.innerHTML.match(/([0-9]+) mines/)[1];
+    numRemaining = numMines;
+    document.getElementById("flagged-div-text").innerHTML = String(numRemaining).padStart(2, "0");
 
     // Set 2-D array of spaces, inlcuding marking each space as valid or invalid
     var size = difficultyDropDown.innerHTML.split("(")[1].split(")")[0].toLowerCase().replace(" ", "");
@@ -205,10 +208,13 @@ function flagMine() {
     if (space.getIsFlagged()) {
         space.setIsFlagged(false);
         $(this).removeClass("flag-space");
+        numRemaining++;
     } else {
         space.setIsFlagged(true);
         $(this).addClass("flag-space");
+        numRemaining--;
     }
+    document.getElementById("flagged-div-text").innerHTML = String(numRemaining).padStart(2, "0");
 }
 
 function setNumAdjacentMines(space) {
@@ -220,16 +226,16 @@ function setNumAdjacentMines(space) {
     space.setIsRevealed(true);
     var row = space.getRow();
     var col = space.getCol();
-    var numMines = 0;
+    var adjacentMines = 0;
     var adjacentSpaces = getAdjacentSpaces(row, col);
     adjacentSpaces.forEach(function(item) {
         if (item.getIsMine()) {
-            numMines++;
+            adjacentMines++;
         }
     });
     $(space.getElement()).addClass("number-space");
-    $(space.getElement()).addClass("number-" + numMines + "-space");
-    if (numMines == 0) {
+    $(space.getElement()).addClass("number-" + adjacentMines + "-space");
+    if (adjacentMines == 0) {
         adjacentSpaces.forEach(function(item) {
             setNumAdjacentMines(item);
         });
