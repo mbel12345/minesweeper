@@ -100,7 +100,7 @@ function startGame() {
     // Get number of mines from difficulty dropdown
     numMines = difficultyDropDown.innerHTML.match(/([0-9]+) mines/)[1];
     numRemaining = numMines;
-    document.getElementById("flagged-div-text").innerHTML = String(numRemaining).padStart(2, "0");
+    document.getElementById("flagged-div-text").innerHTML = padZeros(numRemaining, 2);
 
     // Set 2-D array of spaces, inlcuding marking each space as valid or invalid
     var size = difficultyDropDown.innerHTML.split("(")[1].split(")")[0].toLowerCase().replace(" ", "");
@@ -214,7 +214,7 @@ function flagMine() {
         $(this).addClass("flag-space");
         numRemaining--;
     }
-    document.getElementById("flagged-div-text").innerHTML = String(numRemaining).padStart(2, "0");
+    document.getElementById("flagged-div-text").innerHTML = padZeros(numRemaining, 2);
 }
 
 function setNumAdjacentMines(space) {
@@ -333,9 +333,19 @@ function startTimer() {
     }
     var currTime = 1;
     timerId = setInterval(function() {
-        document.getElementById("time-div-text").innerHTML = String(currTime).padStart(3, "0");
+        document.getElementById("time-div-text").innerHTML = padZeros(currTime, 3);
         currTime++;
     }, 1000);
+}
+
+function padZeros(num, digits) {
+
+    // Return num as a string, padded with up to digits 0s. Handles negative numbers.
+    if (num >= 0) {
+        return String(num).padStart(digits, "0");
+    } else {
+        return "-" + String(num).replace("-", "").padStart(digits, "0");
+    }
 }
 
 $(document).ready(function() {
