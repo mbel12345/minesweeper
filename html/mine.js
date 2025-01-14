@@ -9,7 +9,7 @@ var numRemaining = 0;
 var gameOver = false;
 var gameStarted = false;
 var timerId = null;
-    
+
 class Space {
 
     _id = "";
@@ -75,12 +75,12 @@ class Space {
     getCol() {
         return this.col;
     }
-         
+
     getElement() {
         return document.getElementById(this._id);
     }
 
-    toHtml() { 
+    toHtml() {
         return "<td class='space " + (this.isValid ? "valid-space" : "invalid-space") + "' id='" + this._id + "'></td>";
     }
 }
@@ -151,7 +151,7 @@ function firstClick(space) {
     gameStarted = true;
 
     // The first space clicked must have 0 mines adjacent to it; mark the first space and its adjacent spaces as non-mines
-    var safeSpaces = getAdjacentSpaces(space.getRow(), space.getCol()).concat([space]); 
+    var safeSpaces = getAdjacentSpaces(space.getRow(), space.getCol()).concat([space]);
     var safeIds = [];
     safeSpaces.forEach(function(item) {
         safeIds.push(item.getId());
