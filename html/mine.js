@@ -193,6 +193,7 @@ function checkSpace() {
         }
     }
     setNumAdjacentMines(space);
+    checkWin();
 }
 
 function flagMine() {
@@ -264,6 +265,28 @@ function loseGame(space) {
         clearInterval(timerId);
     }
     gameOver = true;
+}
+
+function checkWin() {
+
+    // If all valid non-mine spaces have been revealed, the player wins
+    for (var row = 0; row < FULL_HEIGHT; row++) {
+        for (var col = 0; col < FULL_WIDTH; col++) {
+            var space = getSpaceByPosition(row, col);
+            if (space.getIsValid() && !space.getIsMine() && !space.getIsRevealed()) {
+                return false;
+            }
+            console.log(space);
+        }
+    }
+    if (timerId) {
+        clearInterval(timerId);
+    }
+    var statusText = document.getElementById("game-status-div-text");
+    statusText.innerHTML = "You Win!";
+    statusText.style["color"] = "green";
+    gameOver = true;
+    return true;
 }
 
 function getSpace(i) {
