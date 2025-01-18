@@ -1,46 +1,81 @@
 #menu-bar {
     display: flex;
     position: absolute;
-    top: 5%;
-    height: 8%;
-    left: 5%;
-    width: 90%;
+    top: 1.5vh;
+    height: 9vh;
+    left: 5vw;
+    width: 90vw;
 }
 
 .menu-label {
     position: absolute;
     top: 0%;
     height: 45%;
+    width: 100%;
+}
+
+.menu-label > h4, .menu-main > h4 {
+    font-size: 3vh;
 }
 
 .menu-main {
     position: absolute;
     top: 50%;
     height: 50%;
+    width: 100%
+}
+
+.menu-button {
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+}
+
+.menu-button-text {
+    font-size: 2vh;
+}
+
+#difficulty-dropdown-options-div {
+    width: 100%;
 }
 
 #difficulty-div {
-    width: 40%;
+    position: relative;
+    left: 0vw;
+    width: 40vw;
 }
 
 #start-div {
-    width: 15%;
+    position: relative;
+    left: 3vw;
+    width: 10vw;
 }
 
 #flagged-div {
-    width: 15%;
+    position: relative;
+    left: 5vw;
+    width: 11vw;
 }
 
 #time-div {
-    width: 15%;
+    position: relative;
+    left: 7vw;
+    width: 11vw;
+}
+
+#game-status-div {
+    position: relative;
+    left: 10vw;
+    width: 13vw;
 }
 
 #game-div {
     position: absolute;
-    top: 18%;
-    height: 80%;
-    left: 5%;
-    width: 90%;
+    top: 13vh;
+    height: 85vh;
+    left: 5vw;
+    width: 90vw;
 }
 
 #game-grid > tr > td {

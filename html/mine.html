@@ -18,23 +18,35 @@
                         <h4 id="difficulty-label">Difficulty</h4>
                     </div>
                     <div class="dropdown menu-main">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="difficulty-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Difficulty</button>
-                        <div class="dropdown-menu" aria-labelledby="difficulty-dropdown">
-                            <a class="dropdown-item difficulty-item" href="#">Test (6 x 6) with 6 mines</a>
-                            <a class="dropdown-item difficulty-item" href="#">Easy (9 x 9) with 10 mines</a>
-                            <a class="dropdown-item difficulty-item" href="#">Intermediate (16 x 16) with 40 mines</a>
-                            <a class="dropdown-item difficulty-item" href="#">Expert (30 x 16) with 99 mines</a>
+                        <button class="btn btn-secondary dropdown-toggle menu-button d-flex justify-content-center align-items-center" type="button" id="difficulty-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="menu-button-text">Difficulty</span>
+                        </button>
+                        <div class="dropdown-menu" id="difficulty-dropdown-options-div" aria-labelledby="difficulty-dropdown">
+                            <a class="dropdown-item difficulty-item" href="#">
+                                <span class="menu-button-text">Test (6 x 6) with 6 mines</span>
+                            </a>
+                            <a class="dropdown-item difficulty-item" href="#">
+                                <span class="menu-button-text">Easy (9 x 9) with 10 mines</span>
+                            </a>
+                            <a class="dropdown-item difficulty-item" href="#">
+                                <span class="menu-button-text">Medium (16 x 16) with 40 mines</span>
+                            </a>
+                            <a class="dropdown-item difficulty-item" href="#">
+                                <span class="menu-button-text">Expert (30 x 16) with 99 mines</span>
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div id="start-div">
                     <div class="menu-main">
-                        <button class="btn btn-primary" id="start-button" type="button">Start</button>
+                        <button class="btn btn-primary menu-button d-flex justify-content-center align-items-center" id="start-button" type="button">
+                            <span class="menu-button-text">Start</span>
+                        </button>
                     </div>
                 </div>
                 <div id="flagged-div">
                     <div class="menu-label">
-                        <h4>Remaining</h4>
+                        <h4>Mines</h4>
                     </div>
                     <div class="menu-main">
                         <h4 id="flagged-div-text"></h4>
