@@ -282,7 +282,6 @@ function checkWin() {
             if (space.getIsValid() && !space.getIsMine() && !space.getIsRevealed()) {
                 return false;
             }
-            console.log(space);
         }
     }
     if (timerId) {
