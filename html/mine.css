@@ -83,11 +83,16 @@
     border-width: 3px;
 }
 #game-grid > tr > .valid-space {
-    background: green;
+    background: rgb(210, 210, 210);
 }
 
 #game-grid > tr > .invalid-space {
-    background: red;
+    background: rgb(140, 140, 140);
+    border: 0px;
+}
+
+#game-grid > tr > .unrevealed-space, #game-grid > tr > .flag-space {
+    border-width: 4px;
 }
 
 #game-grid > tr > .number-space {
@@ -95,7 +100,7 @@
 }
 
 #game-grid > tr > .number-0-space {
-    background-color: #a6a6a6;
+    background-color: rgb(165, 165, 165);
 }
 
 #game-grid > tr > .number-1-space {

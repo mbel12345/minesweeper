@@ -81,7 +81,7 @@ class Space {
     }
 
     toHtml() {
-        return "<td class='space " + (this.isValid ? "valid-space" : "invalid-space") + "' id='" + this._id + "'></td>";
+        return "<td class='space " + (this.isValid ? "valid-space unrevealed-space" : "invalid-space") + "' id='" + this._id + "'></td>";
     }
 }
 
@@ -209,10 +209,12 @@ function flagMine() {
     if (space.getIsFlagged()) {
         space.setIsFlagged(false);
         $(this).removeClass("flag-space");
+        $(this).addClass("unrevealed-space")
         numRemaining++;
     } else {
         space.setIsFlagged(true);
         $(this).addClass("flag-space");
+        $(this).removeClass("unrevealed-space")
         numRemaining--;
     }
     document.getElementById("flagged-div-text").innerHTML = padZeros(numRemaining, 2);
@@ -236,6 +238,7 @@ function setNumAdjacentMines(space) {
     });
     $(space.getElement()).addClass("number-space");
     $(space.getElement()).addClass("number-" + adjacentMines + "-space");
+    $(space.getElement()).removeClass("unrevealed-space");
     if (adjacentMines == 0) {
         adjacentSpaces.forEach(function(item) {
             setNumAdjacentMines(item);
@@ -251,13 +254,16 @@ function loseGame(space) {
             var otherSpace = getSpaceByPosition(row, col);
             if (otherSpace.getIsMine() && !otherSpace.getIsFlagged() && otherSpace.getId() != space.getId()) {
                 $(otherSpace.getElement()).addClass("mine-space");
+                $(otherSpace.getElement()).removeClass("unrevealed-space");
             }
             if (!otherSpace.getIsMine() && otherSpace.getIsFlagged()) {
                 $(otherSpace.getElement()).addClass("wrong-flag-space");
+                $(otherSpace.getElement()).removeClass("unrevealed-space");
             }
         }
     }
     $(space.getElement()).addClass("mine-selected-space");
+    $(space.getElement()).removeClass("unrevealed-space");
     var statusText = document.getElementById("game-status-div-text");
     statusText.innerHTML = "Game Over!";
     statusText.style["color"] = "red";
