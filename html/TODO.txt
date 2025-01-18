@@ -1,4 +1,0 @@
-Re-sizing of text to match window
-Game over text size / other css
-Clean up presentation
-Number sizes
