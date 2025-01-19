@@ -12,7 +12,9 @@ var timerId = null;
 
 class Space {
 
-    _id = "";
+    // Represents a space on the board, and whether or not it is a mine.
+
+    _id = ""; // id of the corresponding HTML element
     isValid = false; // Space's position is within the board?
     isMine = false; // Is the Space a mine?
     isRevealed = false; // Number/blank is visible?
@@ -102,7 +104,7 @@ function startGame() {
     numRemaining = numMines;
     document.getElementById("flagged-div-text").innerHTML = padZeros(numRemaining, 2);
 
-    // Set 2-D array of spaces, inlcuding marking each space as valid or invalid
+    // Set 2-D array of spaces, including marking each space as valid or invalid
     var size = difficultyDropDown.innerHTML.split("(")[1].split(")")[0].toLowerCase().replace(" ", "");
     width = Number(size.split("x")[0]);
     height = Number(size.split("x")[1]);
@@ -157,7 +159,7 @@ function firstClick(space) {
         safeIds.push(item.getId());
     });
 
-    // Keep randomly selecting board spaces and making each one a mine if allowed, until the correct number of mines has been set
+    // Keep randomly selecting a board space and making it a mine if allowed, until the correct number of mines has been set
     var minesSet = 0;
     var attemptedMines = Array.from(Array(FULL_WIDTH*FULL_HEIGHT).keys());
     while (minesSet < numMines)
@@ -296,7 +298,7 @@ function checkWin() {
 
 function getSpace(i) {
 
-    // i is a number between 0 and FULL_WIDTH*FULL_HEIGHT, where 0 represents top-left space and FULL_WIDTH*FULL_HEIGHT-1 represents bottom-right space OR
+    // i is a number between 0 and FULL_WIDTH*FULL_HEIGHT, where 0 represents top-left space and FULL_WIDTH*FULL_HEIGHT-1 represents bottom-right space, OR
     // an id of the <td> element that contains the space, which is space-<number representing the above description>
     i = parseInt(i.toString().replace("space-", ""));
     var row = Math.floor(i / FULL_WIDTH);
